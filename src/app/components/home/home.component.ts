@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
 
     cmdChunk.forEach(function (value) {
       if (value !== undefined || value !== '') {
-        console.log(`parsePSLine - value detected - ${value}`);
+        // console.log(`parsePSLine - value detected - ${value}`);
         if (value === '"**********************') { psTranscriptionHeader = !psTranscriptionHeader; }
 
         if (value[0] === '*') { return ; }
@@ -49,9 +49,9 @@ export class HomeComponent implements OnInit {
         if (psTranscriptionHeader === true ) { return; }
 
         if (value.startsWith('PS ')) {
-          console.log(`parsePSLine - PS detected - ${value}`);
+          // console.log(`parsePSLine - PS detected - ${value}`);
           if ( cmdDetected === true ) {
-            console.log(`pushing ${partialCommand}`);
+            // console.log(`pushing ${partialCommand}`);
 
             self.PSCommands.push(partialCommand);
             self.PSCommandExt.push(new PSCommand(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]));
@@ -105,29 +105,34 @@ export class HomeComponent implements OnInit {
 
            if (path.endsWith('.txt')) {
              console.log('path ended with .txt - opening file');
-             const a = require('growing-file');
 
-             const b = a.open(path, {
-               timeout: false,
+             if ( fileHash[path] !== undefined ) { return; }
+
+             let a = require('growing-file');
+             fileHash[path] = a.open(path, {
+               timeout: Infinity,
                interval: 500,
-               startFromEnd: false});
+               startFromEnd: true});
 
-             console.log(b);
+             console.log(fileHash[path]);
 
-             fileHash[path] = b; // set
+             // fileHash[path]t.resume();
 
-             // foundFile.resume();
-
-             b.on('data', (chunk) => {
-               // console.log(`Received ${chunk.length} bytes of data. ${chunk}`);
-
+             fileHash[path].on('data', (chunk) => {
+                console.log(`Received ${chunk.length} bytes of data on open.`);
+                console.log('b.On firing');
                // has to be 'self' that is assigned out, because 'this' points to
                // GrowingFile because we are inside this anonymous function (???)
                self.parsePSLine(chunk.toString());
-
              });
 
-             // let value = fileHssh["somestring"]; //get
+             fileHash[path].on('error', (info) => {
+               console.log(`error on open - ${info}`);
+             });
+             fileHash[path].on('end', () => {
+              console.log('end event on open');
+             });
+
            }
           });
       })
@@ -156,20 +161,33 @@ export class HomeComponent implements OnInit {
         && details.watchedPath.endsWith('.txt')
         ) {
           console.log('looking up fileHash[watchedPath]');
-          let foundFile = fileHash[details.watchedPath];
-          if (foundFile === undefined) {
+          console.log(`looking up ${fileHash[details.watchedPath]}`);
+
+          if (fileHash[details.watchedPath] === undefined) {
             const a = require('growing-file');
 
             const b = a.open(details.watchedPath, {
-              timeout: false,
-              interval: 500,
-              startFromEnd: false});
+              timeout: Infinity,
+              interval: 500 });
+
             fileHash[details.watchedPath] = b;
-            foundFile = b;
+
+            b.on('data', (chunk) => {
+              console.log(`Received ${chunk.length} bytes of data during change.`);
+              console.log('b.On firing');
+              // has to be 'self' that is assigned out, because 'this' points to
+              // GrowingFile because we are inside this anonymous function (???)
+              self.parsePSLine(chunk.toString());
+
+            });
+          } else {
+            console.log('existing fileHash found - should read offset data');
+
+            let c: GrowFile = fileHash[details.watchedPath];
+            console.log(c);
+            c
+            c.resume();
           }
-
-          console.log(foundFile);
-
         }
     });
 
