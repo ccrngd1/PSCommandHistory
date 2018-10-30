@@ -37,6 +37,9 @@
     "e2e": "npm run postinstall:web && ng e2e"
   },
   "dependencies": {
+    "@angular/animations": "^7.0.1",
+    "@angular/cdk": "^7.0.2",
+    "@angular/material": "^7.0.2",
     "chokidar": "^2.0.4",
     "growing-file": "^0.1.3"
   },

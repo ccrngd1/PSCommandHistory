@@ -7,10 +7,12 @@
     </tr>
     </thead>
     <tbody>
+    <div class="btn-group" role="group" aria-label="Basic example">
     <tr *ngFor="let datavalues of PSCommandExt">
-      <td><button type="button" class="btn btn-primary">{{ datavalues.location }}</button></td>
-      <td><button type="button" class="btn btn-primary">{{ datavalues.command }}</button></td>
+      <td><button type="button" class="btn btn-secondary" (click)="btnCmdCopy($event)">{{ datavalues.command }}</button></td>
+      <td><button type="button" class="btn btn-secondary" (click)="btnPathCopy($event)">{{ datavalues.location }}</button></td>
     </tr>
+    </div>
     </tbody>
     <!--<tbody>
     <tr *ngFor="let datavalues of PSCommands">

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AppConfig} from '../../../environments/environment';
 import GrowFile from 'growing-file';
+import {MatButtonModule, MatCheckboxModule} from '@angular/material';
 import {forEach} from '@angular/router/src/utils/collection';
 
 export interface IHash {
@@ -75,7 +76,7 @@ export class HomeComponent implements OnInit {
         }
 
       }
-    })
+    });
 
     return;
   }
@@ -199,6 +200,22 @@ export class HomeComponent implements OnInit {
          console.log(eventTYpe);
        }
      });
+  }
+
+  btnCmdCopy(event: Event) {
+    // console.log('Called!!!', event);
+    // console.log(event.srcElement.textContent);
+
+    const {clipboard} = require('electron');
+    clipboard.writeText(event.srcElement.textContent);
+  }
+
+  btnPathCopy(event: Event) {
+    // console.log('Called!!!', event);
+    // console.log(event.srcElement.textContent);
+
+    const {clipboard} = require('electron');
+    clipboard.writeText(`cd "${event.srcElement.textContent}"`);
   }
 
   ngOnInit() {
