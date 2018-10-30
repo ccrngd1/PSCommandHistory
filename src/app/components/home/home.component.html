@@ -1,4 +1,22 @@
 <div class="container">
-  <h1 class="title">
-    APP WORKS!  </h1>
+  <div>
+  <table>
+    <thead>
+    <tr>
+      <th>PS Commands</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let datavalues of PSCommandExt">
+      <td><button type="button" class="btn btn-primary">{{ datavalues.location }}</button></td>
+      <td><button type="button" class="btn btn-primary">{{ datavalues.command }}</button></td>
+    </tr>
+    </tbody>
+    <!--<tbody>
+    <tr *ngFor="let datavalues of PSCommands">
+      <td>{{ datavalues }}</td>
+    </tr>
+    </tbody>-->
+  </table>
+  </div>
 </div>
