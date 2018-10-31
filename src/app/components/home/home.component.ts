@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {AppConfig} from '../../../environments/environment';
 import GrowFile from 'growing-file';
-import {MatButtonModule, MatCheckboxModule} from '@angular/material';
-import {forEach} from '@angular/router/src/utils/collection';
+import {CollectionViewer, DataSource} from '@angular/cdk/collections';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 export interface IHash {
   [details: string]: GrowFile;
@@ -18,16 +18,50 @@ class PSCommand {
   }
 }
 
+class PSDataSoruce implements DataSource<PSCommand> {
+
+  public PSCommandExt = new BehaviorSubject<PSCommand[]>([]);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+
+  public loading$ = this.loadingSubject.asObservable();
+
+  connect(collectionViewer: CollectionViewer): Observable<PSCommand[]> {
+    return this.PSCommandExt.asObservable();
+  }
+
+  disconnect(collectionViewer: CollectionViewer): void {
+    this.PSCommandExt.complete();
+    this.PSCommandExt.complete();
+  }
+
+  loadPS(loc: string, cmd: string,  filter = '',
+         sortDirection = 'asc', pageIndex = 0, pageSize = 3) {
+
+    this.loadingSubject.next(true);
+
+    if (this.PSCommandExt === undefined) {
+      this.PSCommandExt.next([new PSCommand(loc, cmd)]);
+    } else {
+      this.PSCommandExt.next(this.PSCommandExt.getValue().concat(new PSCommand(loc, cmd)));
+    }
+
+    this.loadingSubject.next(false);
+  }
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 
+
 export class HomeComponent implements OnInit {
 
-  PSCommands: string [] = [];
-  PSCommandExt: PSCommand [] = [];
+  // PSCommandExt: PSCommand [] = [];
+  pds: PSDataSoruce = new PSDataSoruce();
+
+  displayedColumns = ['command', 'location'];
 
   public parsePSLine(PSCommandLine: string): void {
     const cmdChunk = PSCommandLine.toString().split('\r\n');
@@ -54,8 +88,9 @@ export class HomeComponent implements OnInit {
           if ( cmdDetected === true ) {
             // console.log(`pushing ${partialCommand}`);
 
-            self.PSCommands.push(partialCommand);
-            self.PSCommandExt.push(new PSCommand(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]));
+            self.pds.loadPS(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]);
+
+            // self.PSCommandExt.push(new PSCommand(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]));
 
             partialCommand = '';
           }
@@ -67,8 +102,9 @@ export class HomeComponent implements OnInit {
             if (cmdDetected === true) {
               cmdDetected = false;
 
-              self.PSCommands.push(partialCommand);
-              self.PSCommandExt.push(new PSCommand(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]));
+              self.pds.loadPS(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]);
+
+              // self.PSCommandExt.push(new PSCommand(partialCommand.split('>')[0].split('PS ')[1], partialCommand.split('>')[1]));
 
               partialCommand = '';
             }

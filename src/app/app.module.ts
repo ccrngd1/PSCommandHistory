@@ -2,7 +2,7 @@ import 'zone.js/dist/zone-mix';
 import 'reflect-metadata';
 import '../polyfills';
 import { BrowserModule } from '@angular/platform-browser';
-import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+import {MatTableModule, MatButtonModule, MatCheckboxModule, MatPaginatorModule} from '@angular/material';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -16,10 +16,12 @@ import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
-  //return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  // return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -35,6 +37,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     MatButtonModule,
     MatCheckboxModule,
+    MatTableModule,
+    BrowserAnimationsModule,
+    MatPaginatorModule,
   ],
   providers: [ElectronService],
   bootstrap: [AppComponent]

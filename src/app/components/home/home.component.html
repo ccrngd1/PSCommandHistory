@@ -1,24 +1,20 @@
 <div class="container">
-  <div>
-  <table>
-    <thead>
-    <tr>
-      <th>PS Commands</th>
-    </tr>
-    </thead>
-    <tbody>
-    <div class="btn-group" role="group" aria-label="Basic example">
-    <tr *ngFor="let datavalues of PSCommandExt">
-      <td><button type="button" class="btn btn-secondary" (click)="btnCmdCopy($event)">{{ datavalues.command }}</button></td>
-      <td><button type="button" class="btn btn-secondary" (click)="btnPathCopy($event)">{{ datavalues.location }}</button></td>
-    </tr>
-    </div>
-    </tbody>
-    <!--<tbody>
-    <tr *ngFor="let datavalues of PSCommands">
-      <td>{{ datavalues }}</td>
-    </tr>
-    </tbody>-->
-  </table>
+  <div class="example-table-container">
+    <table mat-table [dataSource]="pds">
+
+      <ng-container matColumnDef="location">
+        <th mat-header-cell  *matHeaderCellDef>location</th>
+        <td mat-cell *matCellDef="let lesson"><button mat-flat-button color="primary" type="button" (click)="btnPathCopy($event)" title="{{lesson.location }}">{{lesson.location}}</button></td>
+      </ng-container>
+
+      <ng-container matColumnDef="command">
+        <th mat-header-cell *matHeaderCellDef>command</th>
+        <td mat-cell *matCellDef="let lesson"><button mat-flat-button color="primary" type="button" (click)="btnCmdCopy($event)" title="{{lesson.command }}">{{lesson.command }}</button></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
   </div>
 </div>
