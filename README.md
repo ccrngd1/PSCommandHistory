@@ -1,3 +1,31 @@
+
+# PS Logging
+There are some set up steps required to get this up and working
+
+## Enable PS transcription
+
+https://blogs.msdn.microsoft.com/powershell/2006/07/01/perserving-command-history-across-sessions/
+https://www.gsx.com/blog/bid/81096/enhance-your-powershell-experience-by-automatically-loading-scripts
+
+```bash
+$profile
+```
+
+should output something such as
+
+```bash
+PS C:\\Users\\U> $profile
+C:\\Users\\U\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1
+```
+
+Open this powershell script in an editor 
+
+Paste in the following at the top of the file
+
+```bash
+Start-Transcript -OutputDirectory "C:\tools\PSHistory"
+```
+
 # Introduction
 
 Bootstrap and package your project with Angular 6(+) and Electron (Typescript + SASS + Hot Reload) for creating Desktop applications.
@@ -76,5 +104,3 @@ Note that you can't use Electron or NodeJS native libraries in this case. Please
 - Angular 4 & Electron 1 : Branch [angular4](https://github.com/maximegris/angular-electron/tree/angular4)
 - Angular 5 & Electron 1 : Branch [angular5](https://github.com/maximegris/angular-electron/tree/angular5)
 - Angular 6 & Electron 2 : (master) 
-
-## https://blogs.msdn.microsoft.com/powershell/2006/07/01/perserving-command-history-across-sessions/
